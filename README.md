@@ -1,17 +1,35 @@
-# mmkit — 数学建模竞赛全流程 Skills 包
+# mmkit — 数学建模竞赛全流程 Agent Skills 包
 
-**mmkit** 是一个开源的 AI Agent 技能包（Skills Kit），为数学建模竞赛（国赛 CUMCM / 美赛 MCM / 数维杯 / 华为杯 / 五一杯 等）与学术论文写作提供**全流程**编排能力：赛题分析 → 建模 → 编码 → 图表 → 论文 → 编译 → 自审迭代，直至产出可提交的 PDF（或 Word）。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Lang: Python](https://img.shields.io/badge/Lang-Python-3776AB.svg?logo=python&logoColor=white)](#)
+[![Hosts](https://img.shields.io/badge/Hosts-Claude%20Code%20%7C%20Codex%20CLI%20%7C%20Trae-6B7280.svg)](#)
 
-> 设计目标：每个子 skill 平级独立、可单独调用，也可由 orchestrator 驱动组成完整流水线。可运行于 Trae / Codex CLI / Claude Code 等任意具备 Bash + 文件读写能力的 Agent 宿主。
+面向数学建模竞赛（国赛 CUMCM / 美赛 MCM / 数维杯 / 华为杯 / 五一杯 等）与学术论文写作的 **AI Agent 技能包**：赛题分析 → 建模 → 编码 → 图表 → 论文 → 编译 → 自审迭代，直至产出可提交的 PDF（或 Word）。
+
+每个子 skill 平级独立、可单独调用，也可由 orchestrator 驱动组成完整流水线。可运行于 Trae / Codex CLI / Claude Code 等任意具备 Bash + 文件读写能力的 Agent 宿主。
 
 ## 特性
 
-- 🎯 **全流程编排**：`orchestrator/mm_flow.py` CLI 驱动「赛题分析 → 建模 → 编码 → 图表 → 论文 → 编译」流水线，按步推进、健康检查、一致性检查、检查点确认。
-- 🧩 **57 个独立子 skill**：从赛题分析、建模方法、代码编写、图表生成，到中英文论文撰写、docx 导出、文献综述、idea 发现，每个都可脱离流水线单独使用。
-- 🗂 **20+ 竞赛模板**：内置 CUMCM / MCM / APMCM / 数维杯 / 华为杯 / 五一杯 / 华数杯等竞赛的 LaTeX 模板与规则（页数限制、格式要求）。
-- 🔍 **质量护栏**：健康检查、一致性检查（建模报告 vs 代码数值）、反幻觉检查（"太完美"结果检测）、meta 泄露检查、过度声称检查。
-- 🌐 **中英双语**：论文撰写/编译/图表全链路支持中文（XeLaTeX + ctex）与英文（pdflatex）双引擎自动检测。
-- 🧪 **外部评审闭环**：`auto-review-loop` 支持任意 OpenAI 兼容 API（OpenAI / DeepSeek / MiniMax / Kimi / GLM / SiliconFlow 等）做多轮自主审稿迭代。
+- 🎯 **全流程编排**：`orchestrator/mm_flow.py` CLI 驱动流水线，按步推进、健康检查、一致性检查、检查点确认
+- 🧩 **57 个独立子 skill**：赛题分析、建模方法、代码编写、图表生成、中英文论文撰写、docx 导出、文献综述、idea 发现，每个都可脱离流水线单独使用
+- 🗂 **20+ 竞赛模板**：内置各大赛事的 LaTeX 模板与规则（页数限制、格式要求）
+- 🔍 **质量护栏**：健康检查、一致性检查（建模报告 vs 代码数值）、反幻觉检查、meta 泄露检查、过度声称检查
+- 🌐 **中英双语**：论文撰写 / 编译 / 图表全链路支持中文（XeLaTeX + ctex）与英文（pdflatex）双引擎自动检测
+- 🧪 **外部评审闭环**：`auto-review-loop` 支持任意 OpenAI 兼容 API（OpenAI / DeepSeek / MiniMax / Kimi / GLM / SiliconFlow 等）多轮自主审稿迭代
+
+## 工作流
+
+```mermaid
+flowchart LR
+    A[赛题分析] --> B[建模方法]
+    B --> C[代码实现]
+    C --> D[图表生成]
+    D --> E[论文撰写]
+    E --> F[编译产出]
+    F --> G[自审迭代]
+    G -->|健康检查通过| H[可提交 PDF/Word]
+    G -.->|发现问题| C
+```
 
 ## 快速开始
 
@@ -29,7 +47,7 @@ python <skill_root>/orchestrator/mm_flow.py start comp_cumcm \
 | 命令 | 作用 |
 |------|------|
 | `start <template>` | 启动工作流（按模板插入全部步骤） |
-| `next <workflow_id>` | 获取当前待执行步骤（返回 `skill_name`，按需读取对应 SKILL.md） |
+| `next <workflow_id>` | 获取当前待执行步骤（返回 `skill_name`） |
 | `complete <workflow_id>` | 完成当前步骤（自动跑健康检查） |
 | `resolve <workflow_id>` | 处理检查点决策 |
 | `status <workflow_id>` | 查询工作流状态 |
